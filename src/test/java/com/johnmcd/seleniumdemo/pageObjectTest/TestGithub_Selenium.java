@@ -1,5 +1,6 @@
 package com.johnmcd.seleniumdemo.pageObjectTest;
 
+import com.johnmcd.pageobject.githubRepo.GitHubRepoPage;
 import com.johnmcd.seleniumdemo.Driver;
 import org.junit.After;
 import org.junit.Assert;
@@ -8,18 +9,22 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
 
 import java.util.List;
 
 public class TestGithub_Selenium {
 
     private static WebDriver driver;
+    private GitHubRepoPage gitHubRepoPage;
 
     @Before
     public void beforeEachTest() {
         System.setProperty("jna.nosys", "true");
         driver = Driver.NewFirefoxDriver();
         driver.navigate().to("https://github.com/SeleniumHQ/selenium");
+        PageFactory.initElements(driver, GitHubRepoPage.class);
+        gitHubRepoPage = new GitHubRepoPage(driver);
     }
 
     @After
@@ -29,19 +34,12 @@ public class TestGithub_Selenium {
 
     @Test
     public void VerifyPageTitle() {
-        Assert.assertEquals("SeleniumHQ/selenium: A browser automation framework and ecosystem.", driver.getTitle());
+        Assert.assertEquals("SeleniumHQ/selenium: A browser automation framework and ecosystem.", gitHubRepoPage.getPageTitle());
     }
 
     @Test
     public void UserShouldSeeAListOfFoldersAndFiles() {
-        WebElement fileWrap = driver.findElement(By.className("file-wrap"));
-        WebElement tableBody = fileWrap.findElement(By.tagName("tbody"));
-        List<WebElement> filesAndFolders = tableBody.findElements(By.tagName("a"));
-
-        for (WebElement filesAndFolder : filesAndFolders) {
-            Assert.assertTrue("Element was not displayed:" + filesAndFolder.getText(), filesAndFolder.isDisplayed());
-        }
-
+        Assert.assertTrue(gitHubRepoPage.repoDocuments.areAllDocumentsDisplayed());
     }
 
     @Test
