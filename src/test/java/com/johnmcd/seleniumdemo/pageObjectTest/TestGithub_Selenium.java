@@ -11,8 +11,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 
-import java.util.List;
-
 public class TestGithub_Selenium {
 
     private static WebDriver driver;
@@ -46,5 +44,14 @@ public class TestGithub_Selenium {
     public void UserShouldSeeHowManyCommits() {
         WebElement numberOfCommits = driver.findElement(By.partialLinkText("commits"));
         Assert.assertTrue(numberOfCommits.isDisplayed());
+    }
+
+    @Test
+    public void UserCanSearchForText() {
+        gitHubRepoPage.search.SearchFor("Test");
+        String newUrl = driver.getCurrentUrl();
+
+        String expectedUrl = "https://github.com/SeleniumHQ/selenium/search?";
+        Assert.assertTrue(newUrl, newUrl.startsWith(expectedUrl));
     }
 }
